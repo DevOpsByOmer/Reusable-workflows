@@ -1,4 +1,4 @@
-name: Reusable - Docker Build, Scan & Push
+name: Reusable  - CI (Build + Trivy)
 
 on:
   workflow_call:
@@ -12,13 +12,7 @@ on:
       context:
         required: true
         type: string
-    secrets:
-      DOCKERHUB_USERNAME:
-        required: true
-      DOCKERHUB_TOKEN:
-        required: true
-
-
+  
 jobs:
   docker-build:
     runs-on: ubuntu-latest
@@ -49,13 +43,4 @@ jobs:
           format: table
           ignore-unfixed: true
           severity: CRITICAL,HIGH
-      - name: 🔐 Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: ☁️ Tag & Push to DockerHub
-        run: |
-          docker tag ${{ inputs.service_name }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.service_name }}:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.service_name }}:latest
+      
